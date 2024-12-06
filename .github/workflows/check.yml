@@ -1,0 +1,29 @@
+name: Automated tests + ruff
+on:
+    push:
+        branches:
+        - main
+    pull_request:
+        branches:
+        - main
+
+jobs:
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
+            - uses: Gr1N/setup-poetry@v9
+            - uses: actions/cache@v4
+              with:
+                path: ~/.cache/pypoetry/virtualenvs
+                key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+            - run: poetry install
+            - run: poetry run pytest
+    ruff:
+        name: Ruff
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/ruff-action@v1
